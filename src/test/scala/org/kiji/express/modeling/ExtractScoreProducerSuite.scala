@@ -40,6 +40,7 @@ import org.kiji.schema.KijiURI
 import org.kiji.schema.layout.KijiTableLayout
 import org.kiji.schema.layout.KijiTableLayouts
 import org.kiji.schema.util.InstanceBuilder
+import org.kiji.express.datarequest.{ExpressColumnRequest, ExpressDataRequest}
 
 class ExtractScoreProducerSuite
     extends KijiSuite {
@@ -61,7 +62,8 @@ class ExtractScoreProducerSuite
 
       // Update configuration object with appropriately serialized ModelDefinition/ModelEnvironment
       // JSON.
-      val request: KijiDataRequest = KijiDataRequest.create("family", "column1")
+      val request: ExpressDataRequest = new ExpressDataRequest(0, Long.MaxValue,
+          new ExpressColumnRequest("family:column1", 1, None)::Nil)
       val sideDataPath: Path = KeyValueStoreImplSuite.generateAvroKVRecordKeyValueStore()
       val modelDefinition: ModelDefinition = ModelDefinition(
           name = "test-model-definition",
@@ -135,12 +137,9 @@ class ExtractScoreProducerSuite
 
       // Update configuration object with appropriately serialized ModelDefinition/ModelEnvironment
       // JSON.
-      val request: KijiDataRequest = {
-        val builder = KijiDataRequest.builder()
-        builder.newColumnsDef().add("family", "column1")
-        builder.newColumnsDef().add("family", "column2")
-        builder.build()
-      }
+      val request: ExpressDataRequest = new ExpressDataRequest(0, Long.MaxValue,
+          new ExpressColumnRequest("family:column1", 1, None)::
+          new ExpressColumnRequest("family:column2", 1, None)::Nil)
       val modelDefinition: ModelDefinition = ModelDefinition(
           name = "test-model-definition",
           version = "1.0",
@@ -204,7 +203,8 @@ class ExtractScoreProducerSuite
 
       // Update configuration object with appropriately serialized ModelDefinition/ModelEnvironment
       // JSON.
-      val request: KijiDataRequest = KijiDataRequest.create("family", "column1")
+      val request: ExpressDataRequest = new ExpressDataRequest(0, Long.MaxValue,
+          new ExpressColumnRequest("family:column1", 1, None)::Nil)
       val sideDataPath: Path = KeyValueStoreImplSuite.generateAvroKVRecordKeyValueStore()
       val modelDefinition: ModelDefinition = ModelDefinition(
           name = "test-model-definition",

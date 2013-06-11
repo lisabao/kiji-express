@@ -27,7 +27,10 @@
       "max_timestamp" : 38475687,
       "column_definitions" : [ {
         "name" : "info:in",
-        "max_versions" : 3
+        "max_versions" : 3,
+        "filter" : {
+          "regex" : "foo"
+        }
       } ]
     },
     "kv_stores" : [ {

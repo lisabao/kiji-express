@@ -35,6 +35,7 @@ import org.kiji.express.util.Resources.resourceAsString
 import org.kiji.schema.KijiDataRequest
 import org.kiji.schema.util.FromJson
 import org.kiji.schema.util.ToJson
+import org.kiji.express.datarequest.{RegexQualifierFilter, ExpressColumnRequest, ExpressDataRequest}
 
 class ModelEnvironmentSuite extends FunSuite {
   val validDefinitionLocation: String =
@@ -60,6 +61,7 @@ class ModelEnvironmentSuite extends FunSuite {
       "The provided model environment is of protocol version: \"model_environment-0.2.0\""
 
   test("ModelEnvironment can be created from a path to a valid JSON file.") {
+    println()
     val expectedRequest: KijiDataRequest = {
       val builder = KijiDataRequest.builder().withTimeRange(0, 38475687)
       builder.newColumnsDef().withMaxVersions(3).add("info", "in")
@@ -86,18 +88,15 @@ class ModelEnvironmentSuite extends FunSuite {
 
     assert("myRunProfile" === environment.name)
     assert("1.0.0" === environment.version)
-    assert(expectedRequest === environment.extractEnvironment.dataRequest)
+    assert(expectedRequest === environment.extractEnvironment.dataRequest.toKijiDataRequest())
     assert(expectedKvstores === environment.extractEnvironment.kvstores)
     assert("info:out" === environment.scoreEnvironment.outputColumn)
     assert(expectedKvstores === environment.scoreEnvironment.kvstores)
   }
 
   test("Settings on a model environment can be modified.") {
-    val dataRequest: KijiDataRequest = {
-      val builder = KijiDataRequest.builder().withTimeRange(0, 38475687)
-      builder.newColumnsDef().withMaxVersions(3).add("info", "in")
-      builder.build()
-    }
+    val dataRequest: ExpressDataRequest = new ExpressDataRequest(0, 38475687,
+      new ExpressColumnRequest("info:in", 3, None)::Nil)
 
     // Extract and score environments to use in tests.
     val extractEnv = ExtractEnvironment(dataRequest, Seq(), Seq())
@@ -188,20 +187,17 @@ class ModelEnvironmentSuite extends FunSuite {
   }
 
   test("ModelEnvironment validates column names when constructed from JSON.") {
-    val thrown = intercept[ValidationException] {
+    val thrown = intercept[ModelEnvironmentValidationException] {
       ModelEnvironment.fromJsonFile(invalidColumnsDefinitionLocation)
     }
-    assert(thrown.getMessage.contains("invalid1"))
-    assert(thrown.getMessage.contains("invalid2"))
+    assert(thrown.getMessage.contains("*invalid1"))
+    assert(thrown.getMessage.contains("*invalid2"))
     assert(!thrown.getMessage.contains("valid:column"))
   }
 
   test("ModelEnvironment validates extract field bindings when programmatically constructed.") {
-    val dataRequest: KijiDataRequest = {
-      val builder = KijiDataRequest.builder().withTimeRange(0, 38475687)
-      builder.newColumnsDef().withMaxVersions(3).add("info", "in")
-      builder.build()
-    }
+    val dataRequest: ExpressDataRequest = new ExpressDataRequest(0, 38475687,
+        new ExpressColumnRequest("info:in", 3, None)::Nil)
 
     val extractEnv = ExtractEnvironment(
         dataRequest,
