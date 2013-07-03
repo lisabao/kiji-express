@@ -25,9 +25,12 @@ import scala.io.Source
 import org.scalatest.FunSuite
 
 import org.kiji.express.avro._
+import org.kiji.express.datarequest.AndFilter
 import org.kiji.express.datarequest.ColumnRangeFilter
+import org.kiji.express.datarequest.ExpressColumnFilter
 import org.kiji.express.datarequest.ExpressColumnRequest
 import org.kiji.express.datarequest.ExpressDataRequest
+import org.kiji.express.datarequest.OrFilter
 import org.kiji.express.datarequest.RegexQualifierFilter
 import org.kiji.express.util.Resources.doAndClose
 import org.kiji.express.util.Resources.resourceAsString
@@ -427,7 +430,8 @@ class ModelEnvironmentSuite extends FunSuite {
           regexQualifierFilterSpec.asInstanceOf[java.lang.Object]).asJava)
       .build()
 
-    val expressFilter: ExpressColumnFilter = avroToExpressFilter(avroFilter)
+    val expressFilter: ExpressColumnFilter = ModelEnvironment.avroToExpressFilter(andFilterSpec)
+    assert(expressFilter.isInstanceOf[AndFilter], "incorrect filter instantiated")
   }
 
   test("ModelEnvironment can instantiate an Avro column filter from an Express column filter.") {
