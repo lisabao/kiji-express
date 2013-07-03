@@ -517,7 +517,7 @@ object ModelEnvironment {
    * @return an Express column filter converted from the provided Avro column filter.
    */
   private[express] def avroToExpressFilter(filter: AnyRef): ExpressColumnFilter = {
-    filter.getClass match {
+    filter match {
       case filter: RegexQualifierFilterSpec => new RegexQualifierFilter(filter.getRegex)
 
       case colRangeFilter: ColumnRangeFilterSpec =>
@@ -525,16 +525,14 @@ object ModelEnvironment {
             colRangeFilter.getMaxQualifier, colRangeFilter.getMaxIncluded)
 
       case andFilter: AndFilterSpec => {
-        val filterList: List[ExpressColumnFilter] = andFilter.getFilters.asScala.toList.map {
-          avroToExpressFilter _
-        }
+        val filterList: List[ExpressColumnFilter] =
+            andFilter.getFilters.asScala.toList.map { avroToExpressFilter _ }
         new AndFilter(filterList)
       }
 
       case orFilter: OrFilterSpec => {
-        val filterList: List[ExpressColumnFilter] = orFilter.getFilters.asScala.toList.map {
-          avroToExpressFilter _
-        }
+        val filterList: List[ExpressColumnFilter] =
+            orFilter.getFilters.asScala.toList.map { avroToExpressFilter _ }
         new OrFilter(filterList)
       }
     }
