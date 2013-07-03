@@ -32,7 +32,9 @@ import org.kiji.express.datarequest.RegexQualifierFilter
 import org.kiji.express.util.Resources.doAndClose
 import org.kiji.express.util.Resources.resourceAsString
 import org.kiji.schema.KijiDataRequest
+import org.kiji.schema.filter.AndColumnFilter
 import org.kiji.schema.filter.KijiColumnRangeFilter
+import org.kiji.schema.filter.OrColumnFilter
 import org.kiji.schema.filter.RegexQualifierColumnFilter
 import org.kiji.schema.util.FromJson
 import org.kiji.schema.util.ToJson
@@ -284,7 +286,6 @@ class ModelEnvironmentSuite extends FunSuite {
     assert(colReq.getFilter.isInstanceOf[KijiColumnRangeFilter], "incorrect filter type")
   }
 
-  //TODO(EXP-62)
   test("ModelEnvironment can convert an Avro data request to a Kiji data request using a" +
       " regex qualifier filter.") {
     val colSpec: ColumnSpec = ColumnSpec
@@ -317,7 +318,61 @@ class ModelEnvironmentSuite extends FunSuite {
     assert(colReq.getFilter.isInstanceOf[RegexQualifierColumnFilter], "incorrect filter type")
   }
 
-  test("ModelEnvironment validates an Avro data request.") {
+  //TODO(EXP-62)
+  test("ModelEnvironment can convert an Avro data request to a Kiji data request using a" +
+      " logical AND filter.") {
+    val columnRangeFilterSpec = ColumnRangeFilterSpec
+      .newBuilder()
+      .setMinQualifier(null)
+      .setMinIncluded(true)
+      .setMaxQualifier(null)
+      .setMaxIncluded(true)
+      .build()
+    val regexQualifierFilterSpec = RegexQualifierFilterSpec
+      .newBuilder()
+      .setRegex("hello")
+      .build()
+
+    val colSpec: ColumnSpec = ColumnSpec
+      .newBuilder()
+      .setName("info:andFilter")
+      .setFilter(AndFilterSpec
+        .newBuilder()
+        .setFilters(List(columnRangeFilterSpec.asInstanceOf[java.lang.Object],
+            regexQualifierFilterSpec.asInstanceOf[java.lang.Object]).asJava)
+        .build()
+      )
+      .build()
+
+    // Build an Avro data request.
+    val avroDataReq = AvroDataRequest
+      .newBuilder()
+      .setMinTimestamp(0L)
+      .setMaxTimestamp(38475687)
+      .setColumnDefinitions(List(colSpec).asJava)
+      .build()
+
+    // Convert from Avro to Kiji.
+    val kijiDataReq = ModelEnvironment.avroToKijiDataRequest(avroDataReq)
+
+    // Check that properties are the same.
+    assert(avroDataReq.getMinTimestamp === kijiDataReq.getMinTimestamp)
+    assert(avroDataReq.getMaxTimestamp === kijiDataReq.getMaxTimestamp)
+    val colReq: KijiDataRequest.Column = kijiDataReq.getColumn("info", "andFilter")
+    assert("info:andFilter" === colReq.getColumnName.getName)
+    assert(1 === colReq.getMaxVersions)
+    assert(colReq.getFilter.isInstanceOf[AndColumnFilter], "incorrect filter type")
+  }
+
+  test("ModelEnvironment can instantiate an Express column filter from an Avro column filter.") {
+    pending
+  }
+
+  test("ModelEnvironment can instantiate an Avro column filter from an Express column filter.") {
+    pending
+  }
+
+  test("ModelEnvironment can instantiate Kiji column filters from json.") {
     pending
   }
 }
