@@ -37,11 +37,6 @@ trait ExpressColumnFilter {
   def getKijiColumnFilter(): KijiColumnFilter
 
   /**
-   * Returns an AvroRecord that describes this Express column filter.
-   */
-  def getAvroColumnFilter(): AnyRef
-
-  /**
    * A utility method that allows us to recursively translate And and Or express filters
    * into the corresponding Avro representation.
    *

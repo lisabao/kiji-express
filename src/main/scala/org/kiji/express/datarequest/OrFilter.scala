@@ -33,15 +33,4 @@ case class OrFilter(filtersList: List[ExpressColumnFilter]) extends ExpressColum
     val schemaFilters = filtersList.map{filter: ExpressColumnFilter => filter.getKijiColumnFilter()}
     Filters.or(schemaFilters.toArray : _*)
   }
-
-  /**
-   * Returns an AvroRecord that describes this express column filter.
-   */
-  def getAvroColumnFilter(): AnyRef = {
-    val filterSpecs: List[AnyRef] = filtersList.map {
-      expFilter: ExpressColumnFilter =>
-        expressToAvroFilter(expFilter)
-    }
-    OrFilterSpec.newBuilder().setFilters(filterSpecs.asJava)
-  }
 }

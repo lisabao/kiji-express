@@ -25,12 +25,9 @@ import org.kiji.schema.filter.KijiColumnRangeFilter
 
 case class ColumnRangeFilter(minQualifier: String, minIncluded: Boolean, maxQualifier: String,
     maxIncluded: Boolean) extends ExpressColumnFilter {
-
+  /**
+   * Returns a concrete KijiColumnFilter that implements this express column filter.
+   */
   def getKijiColumnFilter(): KijiColumnFilter = new KijiColumnRangeFilter(minQualifier, minIncluded,
       maxQualifier, maxIncluded)
-
-  def getAvroColumnFilter(): ColumnRangeFilterSpec = ColumnRangeFilterSpec.newBuilder()
-        .setMinQualifier(minQualifier).setMinIncluded(minIncluded)
-        .setMaxQualifier(maxQualifier).setMaxIncluded(maxIncluded)
-        .build()
 }

@@ -31,12 +31,4 @@ case class AndFilter(filtersList: List[ExpressColumnFilter]) extends ExpressColu
     val schemaFilters = filtersList.map{filter: ExpressColumnFilter => filter.getKijiColumnFilter()}
     Filters.and(schemaFilters.toArray : _*)
   }
-
-  def getAvroColumnFilter(): AndFilterSpec = {
-    val filterSpecs: List[AnyRef] = filtersList.map {
-      expFilter: ExpressColumnFilter =>
-        expressToAvroFilter(expFilter)
-    }
-    AndFilterSpec.newBuilder().setFilters(filterSpecs.asJava).build()
-  }
 }

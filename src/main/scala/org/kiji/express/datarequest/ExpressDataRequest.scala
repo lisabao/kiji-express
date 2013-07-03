@@ -24,6 +24,7 @@ import scala.collection.JavaConverters.seqAsJavaListConverter
 import scala.collection.JavaConverters.asScalaBufferConverter
 
 import org.kiji.express.avro._
+import org.kiji.express.modeling.ModelEnvironment
 import org.kiji.schema.KijiColumnName
 import org.kiji.schema.KijiDataRequest
 
@@ -87,7 +88,7 @@ case class ExpressDataRequest(minTimeStamp: Long, maxTimeStamp: Long,
   private[express] def toAvro(): AvroDataRequest = {
     val columns: Seq[ColumnSpec] = columnRequests map {colRequest: ExpressColumnRequest =>
       val avroFilter = colRequest.filter.flatMap { expFil:  ExpressColumnFilter =>
-        Option(expFil.getAvroColumnFilter())
+        Option(ModelEnvironment.expressToAvroFilter(expFil))
       }
       ColumnSpec
         .newBuilder()

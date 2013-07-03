@@ -366,7 +366,6 @@ class ModelEnvironmentSuite extends FunSuite {
     assert(colReq.getFilter.isInstanceOf[AndColumnFilter], "incorrect filter type")
   }
 
-  //TODO(EXP-62)
   test("ModelEnvironment can convert an Avro data request to a Kiji data request with a" +
       " logical OR filter.") {
     val columnRangeFilterSpec = ColumnRangeFilterSpec
@@ -440,5 +439,7 @@ class ModelEnvironmentSuite extends FunSuite {
 
   test("ModelEnvironment can instantiate Kiji column filters from json.") {
     pending
+    //TODO write Json manually?
+    //println(ToJson.toJsonString(columnRangeFilterSpec))
   }
 }

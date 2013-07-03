@@ -29,11 +29,4 @@ case class RegexQualifierFilter(regex: String) extends ExpressColumnFilter {
    * Returns a concrete KijiColumnFilter that implements this express column filter.
    */
   def getKijiColumnFilter(): KijiColumnFilter = new RegexQualifierColumnFilter(regex)
-
-  /**
-   * Returns an AvroRecord that describes this express column filter.
-   */
-  def getAvroColumnFilter(): AnyRef = RegexQualifierFilterSpec.newBuilder()
-      .setRegex(regex)
-      .build()
 }
