@@ -29,11 +29,11 @@ class DataRequestTestSuite extends FunSuite {
         new ExpressColumnRequest("info:test", 2, Option(new RegexQualifierFilter("x*")))::Nil)
     val transformed2KDR: KijiDataRequest = startingDataRequest.toKijiDataRequest()
 
-    assert(0 == transformed2KDR.getMinTimestamp)
-    assert(100010L == transformed2KDR.getMaxTimestamp)
-    val colReq: KijiDataRequest.Column =transformed2KDR.getColumn("info", "test")
-    assert("info:test" == colReq.getColumnName.getName)
-    assert(2 == colReq.getMaxVersions)
+    assert(0 === transformed2KDR.getMinTimestamp)
+    assert(100010L === transformed2KDR.getMaxTimestamp)
+    val colReq: KijiDataRequest.Column = transformed2KDR.getColumn("info", "test")
+    assert("info:test" === colReq.getColumnName.getName)
+    assert(2 === colReq.getMaxVersions)
     assert(colReq.getFilter.isInstanceOf[RegexQualifierColumnFilter])
   }
 }
