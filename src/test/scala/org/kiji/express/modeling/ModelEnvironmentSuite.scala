@@ -24,18 +24,15 @@ import scala.io.Source
 
 import org.scalatest.FunSuite
 
-import org.kiji.express.avro.AvroDataRequest
-import org.kiji.express.avro.AvroModelEnvironment
-import org.kiji.express.avro.ColumnSpec
-import org.kiji.express.avro.KVStore
-import org.kiji.express.avro.KvStoreType
-import org.kiji.express.avro.Property
+import org.kiji.express.avro._
+import org.kiji.express.datarequest.ExpressColumnRequest
+import org.kiji.express.datarequest.ExpressDataRequest
+import org.kiji.express.datarequest.RegexQualifierFilter
 import org.kiji.express.util.Resources.doAndClose
 import org.kiji.express.util.Resources.resourceAsString
 import org.kiji.schema.KijiDataRequest
 import org.kiji.schema.util.FromJson
 import org.kiji.schema.util.ToJson
-import org.kiji.express.datarequest.{RegexQualifierFilter, ExpressColumnRequest, ExpressDataRequest}
 
 class ModelEnvironmentSuite extends FunSuite {
   val validDefinitionLocation: String =
@@ -224,8 +221,36 @@ class ModelEnvironmentSuite extends FunSuite {
   }
 
   //TODO(EXP-62)
-  test("ModelEnvironment can convert an Avro data request to a Kiji data request.") {
-    pending
+  test("ModelEnvironment can convert an Avro data request to a Kiji data request using a" +
+      " null filter.") {
+    colSpec: ColumnSpec = ColumnSpec
+      .newBuilder()
+      .setName("null")
+      .build()
+
+    // Build an Avro data request.
+    avroDataRequest = AvroDataRequest
+      .newBuilder()
+      .setMinTimestamp(0L)
+      .setMaxTimestamp(38475687)
+      .setColumnDefinitions(List(colSpec))
+      .build()
   }
 
+  test("ModelEnvironment can convert an Avro data request to a Kiji data request using a" +
+      " column range filter.") {
+    colSpec: ColumnSpec = ColumnSpec
+      .newBuilder()
+      .setName("columnRangeFilter")
+      .setFilter(ColumnRangeFilterSpec)
+      .build()
+
+    // Build an Avro data request.
+    avroDataRequest = AvroDataRequest
+      .newBuilder()
+      .setMinTimestamp(0L)
+      .setMaxTimestamp(38475687)
+      .setColumnDefinitions(List(colSpec))
+      .build()
+  }
 }

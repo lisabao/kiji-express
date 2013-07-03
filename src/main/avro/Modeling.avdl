@@ -135,13 +135,19 @@ protocol Modeling {
       string regex;
    }
 
-   /** Specification of an 'and' filter. This filter combines a list of column filters using a logical AND operator. */
+   /**
+    * Specification of an 'and' filter. This filter combines a list of column filters using a
+    * logical AND operator.
+    */
    record AndFilterSpec {
      /** The filters to AND together. */
      array<union { RegexQualifierFilterSpec, ColumnRangeFilterSpec }> filters;
    }
 
-   /** Specification of an 'or' filter. This filter combines a list of column filters using a logical OR operator. */
+   /**
+    * Specification of an 'or' filter. This filter combines a list of column filters using a
+    * logical OR operator.
+    */
    record OrFilterSpec {
      /** The filters to OR together. */
      array<union { RegexQualifierFilterSpec, ColumnRangeFilterSpec }> filters;
@@ -164,7 +170,8 @@ protocol Modeling {
     /**
      * A ColumnFilter to attach to the column. Potentially null.
      */
-    union { null, AndFilterSpec, OrFilterSpec, ColumnRangeFilterSpec, RegexQualifierFilterSpec} filter = null;
+    union { null, AndFilterSpec, OrFilterSpec, ColumnRangeFilterSpec, RegexQualifierFilterSpec }
+        filter = null;
   }
 
   /**

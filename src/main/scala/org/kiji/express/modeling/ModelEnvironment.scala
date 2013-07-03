@@ -512,7 +512,6 @@ object ModelEnvironment {
 
   /**
    * Instantiates an Express column filter from an Avro column filter.
-   * TODO ask Juliet again re: AnyRef type Avro filters
    *
    * @param filter to convert from Avro.
    * @return an Express column filter converted from the provided Avro column filter.
@@ -543,7 +542,6 @@ object ModelEnvironment {
 
   /**
    * Instantiates an Avro column filter from an Express column filter.
-   * TODO ask Juliet again re: AnyRef type Avro filters
    *
    * @param filter to convert from Express.
    * @return an Avro column filter converted from the provided Express column filter.
