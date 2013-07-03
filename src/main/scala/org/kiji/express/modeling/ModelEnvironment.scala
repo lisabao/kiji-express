@@ -510,50 +510,76 @@ object ModelEnvironment {
     builder.build()
   }
 
+  /**
+   * Instantiates an Express column filter from an Avro column filter.
+   * TODO ask Juliet again re: AnyRef type Avro filters
+   *
+   * @param filter to convert from Avro.
+   * @return an Express column filter converted from the provided Avro column filter.
+   */
   private[express] def avroToExpressFilter(filter: AnyRef): ExpressColumnFilter = {
     filter.getClass match {
       case filter: RegexQualifierFilterSpec => new RegexQualifierFilter(filter.getRegex)
+
       case colRangeFilter: ColumnRangeFilterSpec =>
         new ColumnRangeFilter(colRangeFilter.getMinQualifier, colRangeFilter.getMinIncluded,
-        colRangeFilter.getMaxQualifier, colRangeFilter.getMaxIncluded)
-      case andFilter: AndFilterSpec =>
+            colRangeFilter.getMaxQualifier, colRangeFilter.getMaxIncluded)
+
+      case andFilter: AndFilterSpec => {
         val filterList: List[ExpressColumnFilter] = andFilter.getFilters.asScala.toList.map {
           avroToExpressFilter _
         }
         new AndFilter(filterList)
-      case orFilter: OrFilterSpec =>
+      }
+
+      case orFilter: OrFilterSpec => {
         val filterList: List[ExpressColumnFilter] = orFilter.getFilters.asScala.toList.map {
           avroToExpressFilter _
         }
         new OrFilter(filterList)
+      }
     }
   }
 
+  /**
+   * Instantiates an Avro column filter from an Express column filter.
+   * TODO ask Juliet again re: AnyRef type Avro filters
+   *
+   * @param filter to convert from Express.
+   * @return an Avro column filter converted from the provided Express column filter.
+   */
   private[express] def expressToAvroFilter(filter: ExpressColumnFilter): AnyRef = {
     filter match {
-      case regexFilter: RegexQualifierFilter =>
+      case regexFilter: RegexQualifierFilter => {
         val regexFilterSpec = new RegexQualifierFilterSpec()
         regexFilterSpec.setRegex(regexFilter.regex)
         regexFilterSpec
-      case rangeFilter: ColumnRangeFilter =>
+      }
+
+      case rangeFilter: ColumnRangeFilter => {
         val colRangeFilterSpec = new ColumnRangeFilterSpec()
         colRangeFilterSpec.setMinQualifier(rangeFilter.minQualifier)
         colRangeFilterSpec.setMinIncluded(rangeFilter.minIncluded)
         colRangeFilterSpec.setMaxQualifier(rangeFilter.maxQualifier)
         colRangeFilterSpec.setMaxIncluded(rangeFilter.maxIncluded)
         colRangeFilterSpec
-      case andFilter: AndFilter =>
+      }
+
+      case andFilter: AndFilter => {
         val andFilterSpec = new AndFilterSpec()
         val expFilterList: List[AnyRef] = andFilter.filtersList map {
           expressToAvroFilter _
         }
         andFilterSpec.setFilters(expFilterList.asJava)
         andFilterSpec
-      case orFilter: OrFilter =>
+      }
+
+      case orFilter: OrFilter => {
         val filterList: List[ExpressColumnFilter] = orFilter.filtersList map {
           avroToExpressFilter _
         }
         new OrFilter(filterList)
+      }
     }
   }
 

@@ -222,4 +222,7 @@ class ModelEnvironmentSuite extends FunSuite {
     assert(thrown.getMessage.contains("tuplename"))
     assert(thrown.getMessage.contains("*invalidcolumnname"))
   }
+
+  test("ModelEnvironment can convert an Avro data request to a Kiji data request.") {}
+
 }
