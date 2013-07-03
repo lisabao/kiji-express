@@ -225,7 +225,7 @@ class ModelEnvironmentSuite extends FunSuite {
     assert(thrown.getMessage.contains("*invalidcolumnname"))
   }
 
-  test("ModelEnvironment can convert an Avro data request to a Kiji data request using a" +
+  test("ModelEnvironment can convert an Avro data request to a Kiji data request with a" +
       " null filter.") {
     val colSpec: ColumnSpec = ColumnSpec
       .newBuilder()
@@ -251,7 +251,7 @@ class ModelEnvironmentSuite extends FunSuite {
     assert(1 === colReq.getMaxVersions)
   }
 
-  test("ModelEnvironment can convert an Avro data request to a Kiji data request using a" +
+  test("ModelEnvironment can convert an Avro data request to a Kiji data request with a" +
       " column range filter.") {
     val colSpec: ColumnSpec = ColumnSpec
       .newBuilder()
@@ -286,7 +286,7 @@ class ModelEnvironmentSuite extends FunSuite {
     assert(colReq.getFilter.isInstanceOf[KijiColumnRangeFilter], "incorrect filter type")
   }
 
-  test("ModelEnvironment can convert an Avro data request to a Kiji data request using a" +
+  test("ModelEnvironment can convert an Avro data request to a Kiji data request with a" +
       " regex qualifier filter.") {
     val colSpec: ColumnSpec = ColumnSpec
       .newBuilder()
@@ -318,8 +318,7 @@ class ModelEnvironmentSuite extends FunSuite {
     assert(colReq.getFilter.isInstanceOf[RegexQualifierColumnFilter], "incorrect filter type")
   }
 
-  //TODO(EXP-62)
-  test("ModelEnvironment can convert an Avro data request to a Kiji data request using a" +
+  test("ModelEnvironment can convert an Avro data request to a Kiji data request with a" +
       " logical AND filter.") {
     val columnRangeFilterSpec = ColumnRangeFilterSpec
       .newBuilder()
@@ -364,8 +363,71 @@ class ModelEnvironmentSuite extends FunSuite {
     assert(colReq.getFilter.isInstanceOf[AndColumnFilter], "incorrect filter type")
   }
 
+  //TODO(EXP-62)
+  test("ModelEnvironment can convert an Avro data request to a Kiji data request with a" +
+      " logical OR filter.") {
+    val columnRangeFilterSpec = ColumnRangeFilterSpec
+      .newBuilder()
+      .setMinQualifier(null)
+      .setMinIncluded(true)
+      .setMaxQualifier(null)
+      .setMaxIncluded(true)
+      .build()
+    val regexQualifierFilterSpec = RegexQualifierFilterSpec
+      .newBuilder()
+      .setRegex("hello")
+      .build()
+
+    val colSpec: ColumnSpec = ColumnSpec
+      .newBuilder()
+      .setName("info:orFilter")
+      .setFilter(OrFilterSpec
+        .newBuilder()
+        .setFilters(List(columnRangeFilterSpec.asInstanceOf[java.lang.Object],
+            regexQualifierFilterSpec.asInstanceOf[java.lang.Object]).asJava)
+        .build()
+      )
+      .build()
+
+    // Build an Avro data request.
+    val avroDataReq = AvroDataRequest
+      .newBuilder()
+      .setMinTimestamp(0L)
+      .setMaxTimestamp(38475687)
+      .setColumnDefinitions(List(colSpec).asJava)
+      .build()
+
+    // Convert from Avro to Kiji.
+    val kijiDataReq = ModelEnvironment.avroToKijiDataRequest(avroDataReq)
+
+    // Check that properties are the same.
+    assert(avroDataReq.getMinTimestamp === kijiDataReq.getMinTimestamp)
+    assert(avroDataReq.getMaxTimestamp === kijiDataReq.getMaxTimestamp)
+    val colReq: KijiDataRequest.Column = kijiDataReq.getColumn("info", "orFilter")
+    assert("info:orFilter" === colReq.getColumnName.getName)
+    assert(1 === colReq.getMaxVersions)
+    assert(colReq.getFilter.isInstanceOf[OrColumnFilter], "incorrect filter type")
+  }
+
   test("ModelEnvironment can instantiate an Express column filter from an Avro column filter.") {
-    pending
+    val columnRangeFilterSpec = ColumnRangeFilterSpec
+      .newBuilder()
+      .setMinQualifier(null)
+      .setMinIncluded(true)
+      .setMaxQualifier(null)
+      .setMaxIncluded(true)
+      .build()
+    val regexQualifierFilterSpec = RegexQualifierFilterSpec
+      .newBuilder()
+      .setRegex("hello")
+      .build()
+    val andFilterSpec = AndFilterSpec
+      .newBuilder()
+      .setFilters(List(columnRangeFilterSpec.asInstanceOf[java.lang.Object],
+          regexQualifierFilterSpec.asInstanceOf[java.lang.Object]).asJava)
+      .build()
+
+    val expressFilter: ExpressColumnFilter = avroToExpressFilter(avroFilter)
   }
 
   test("ModelEnvironment can instantiate an Avro column filter from an Express column filter.") {
