@@ -32,8 +32,8 @@ import org.kiji.express.datarequest.RegexQualifierFilter
 import org.kiji.express.util.Resources.doAndClose
 import org.kiji.express.util.Resources.resourceAsString
 import org.kiji.schema.KijiDataRequest
-//import org.kiji.schema.filter.KijiColumnFilter TODO
 import org.kiji.schema.filter.KijiColumnRangeFilter
+import org.kiji.schema.filter.RegexQualifierColumnFilter
 import org.kiji.schema.util.FromJson
 import org.kiji.schema.util.ToJson
 
@@ -314,8 +314,7 @@ class ModelEnvironmentSuite extends FunSuite {
     val colReq: KijiDataRequest.Column = kijiDataReq.getColumn("info", "regexQualifierFilter")
     assert("info:regexQualifierFilter" === colReq.getColumnName.getName)
     assert(1 === colReq.getMaxVersions)
-    assert(colReq.getFilter.isInstanceOf[KijiRegexQualifierFilter], "incorrect filter type")
-    //TODO test regex??
+    assert(colReq.getFilter.isInstanceOf[RegexQualifierColumnFilter], "incorrect filter type")
   }
 
   test("ModelEnvironment validates an Avro data request.") {
