@@ -434,7 +434,13 @@ class ModelEnvironmentSuite extends FunSuite {
   }
 
   test("ModelEnvironment can instantiate an Avro column filter from an Express column filter.") {
-    pending
+    val expressRegexFilter: ExpressColumnFilter = new RegexQualifierFilter("hello")
+    val avroRegexFilter: AnyRef =
+        ModelEnvironment.expressToAvroFilter(expressRegexFilter)
+
+    // Check that properties are the same.
+    assert(avroRegexFilter.isInstanceOf[RegexQualifierFilterSpec], "incorrect filter instantiated")
+    assert("hello" === avroRegexFilter.asInstanceOf[RegexQualifierFilterSpec].getRegex)
   }
 
   test("ModelEnvironment can instantiate Kiji column filters from json.") {
