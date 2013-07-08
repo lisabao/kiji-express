@@ -55,6 +55,8 @@ class ModelEnvironmentSuite extends FunSuite {
       "src/test/resources/modelEnvironments/invalid-name-and-version-model-environment.json"
   val invalidColumnsDefinitionLocation: String =
       "src/test/resources/modelEnvironments/invalid-columns-model-environment.json"
+  val validFiltersDefinitionLocation: String =
+      "src/test/resources/modelEnvironments/valid-filters-model-environment.json"
 
   // Expected error messages for validation tests.
   val expectedNameError = "The name of the model environment cannot be the empty string."
@@ -340,7 +342,7 @@ class ModelEnvironmentSuite extends FunSuite {
       .setName("info:andFilter")
       .setFilter(AndFilterSpec
         .newBuilder()
-        .setFilters(List(columnRangeFilterSpec.asInstanceOf[java.lang.Object],
+        .setAndFilters(List(columnRangeFilterSpec.asInstanceOf[java.lang.Object],
             regexQualifierFilterSpec.asInstanceOf[java.lang.Object]).asJava)
         .build()
       )
@@ -385,7 +387,7 @@ class ModelEnvironmentSuite extends FunSuite {
       .setName("info:orFilter")
       .setFilter(OrFilterSpec
         .newBuilder()
-        .setFilters(List(columnRangeFilterSpec.asInstanceOf[java.lang.Object],
+        .setOrFilters(List(columnRangeFilterSpec.asInstanceOf[java.lang.Object],
             regexQualifierFilterSpec.asInstanceOf[java.lang.Object]).asJava)
         .build()
       )
@@ -425,7 +427,7 @@ class ModelEnvironmentSuite extends FunSuite {
       .build()
     val andFilterSpec = AndFilterSpec
       .newBuilder()
-      .setFilters(List(columnRangeFilterSpec.asInstanceOf[java.lang.Object],
+      .setAndFilters(List(columnRangeFilterSpec.asInstanceOf[java.lang.Object],
           regexQualifierFilterSpec.asInstanceOf[java.lang.Object]).asJava)
       .build()
 
@@ -444,8 +446,8 @@ class ModelEnvironmentSuite extends FunSuite {
   }
 
   test("ModelEnvironment can instantiate Kiji column filters from json.") {
-    pending
-    //TODO write Json manually?
     //println(ToJson.toJsonString(columnRangeFilterSpec))
+    //TODO
+    val modelEnv: ModelEnvironment = ModelEnvironment.fromJsonFile(validFiltersDefinitionLocation)
   }
 }

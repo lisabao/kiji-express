@@ -58,10 +58,10 @@ trait ExpressColumnFilter {
           .build()
       case andFilter: AndFilter =>
         val expFilterList: List[AnyRef] = andFilter.filtersList map { expressToAvroFilter _ }
-        AndFilterSpec.newBuilder().setFilters(expFilterList.asJava).build()
+        AndFilterSpec.newBuilder().setAndFilters(expFilterList.asJava).build()
       case orFilter: OrFilter =>
         val filterList: List[AnyRef] = orFilter.filtersList map { expressToAvroFilter _ }
-        OrFilterSpec.newBuilder().setFilters(filterList.asJava)
+        OrFilterSpec.newBuilder().setOrFilters(filterList.asJava)
       }
     }
   }

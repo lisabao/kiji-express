@@ -141,7 +141,7 @@ protocol Modeling {
     */
    record AndFilterSpec {
      /** The filters to AND together. */
-     array<union { RegexQualifierFilterSpec, ColumnRangeFilterSpec }> filters;
+     array<union { RegexQualifierFilterSpec, ColumnRangeFilterSpec }> and_filters;
    }
 
    /**
@@ -150,7 +150,7 @@ protocol Modeling {
     */
    record OrFilterSpec {
      /** The filters to OR together. */
-     array<union { RegexQualifierFilterSpec, ColumnRangeFilterSpec }> filters;
+     array<union { RegexQualifierFilterSpec, ColumnRangeFilterSpec }> or_filters;
    }
 
   /**

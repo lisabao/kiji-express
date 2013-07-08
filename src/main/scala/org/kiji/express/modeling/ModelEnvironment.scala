@@ -526,13 +526,13 @@ object ModelEnvironment {
 
       case andFilter: AndFilterSpec => {
         val filterList: List[ExpressColumnFilter] =
-            andFilter.getFilters.asScala.toList.map { avroToExpressFilter _ }
+            andFilter.getAndFilters.asScala.toList.map { avroToExpressFilter _ }
         new AndFilter(filterList)
       }
 
       case orFilter: OrFilterSpec => {
         val filterList: List[ExpressColumnFilter] =
-            orFilter.getFilters.asScala.toList.map { avroToExpressFilter _ }
+            orFilter.getOrFilters.asScala.toList.map { avroToExpressFilter _ }
         new OrFilter(filterList)
       }
     }
@@ -566,7 +566,7 @@ object ModelEnvironment {
         val expFilterList: List[AnyRef] = andFilter.filtersList map {
           expressToAvroFilter _
         }
-        andFilterSpec.setFilters(expFilterList.asJava)
+        andFilterSpec.setAndFilters(expFilterList.asJava)
         andFilterSpec
       }
 

@@ -163,11 +163,11 @@ object ExpressDataRequest {
         new ColumnRangeFilter(colRangeFilter.getMinQualifier, colRangeFilter.getMinIncluded,
           colRangeFilter.getMaxQualifier, colRangeFilter.getMaxIncluded)
       case andFilter: AndFilterSpec =>
-        val filterList: List[ExpressColumnFilter] = andFilter.getFilters.asScala
+        val filterList: List[ExpressColumnFilter] = andFilter.getAndFilters.asScala
             .toList map { filterFromAvro _ }
         new AndFilter(filterList)
       case orFilter: OrFilterSpec =>
-        val filterList: List[ExpressColumnFilter] = orFilter.getFilters.asScala
+        val filterList: List[ExpressColumnFilter] = orFilter.getOrFilters.asScala
             .toList map { filterFromAvro _ }
         new OrFilter(filterList)
     }
